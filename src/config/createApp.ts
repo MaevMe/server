@@ -4,20 +4,23 @@ import cors from 'cors'
 
 const createApp = () => {
   const app = express()
+  const WHITELIST = ['https://maev.me', 'https://api.maev.me', 'https://www.maev.me']
 
   app.use(
     cors({
       // origin: process.env.CLIENT || 'http://localhost:3000',
-      // origin: /.*maev\.me\//,
-      origin: /^.+maev\.me$/,
+      // origin: /^.+maev\.me$/,
+      // origin: 'http://localhost:3000',
+      origin: (origin, callback) => {
+        if (origin && WHITELIST.indexOf(origin) !== -1) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      },
       credentials: true,
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     })
   )
-
-  // app.use((req, res) => {
-  //   res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT || 'http://localhost:3000')
-  // })
 
   if (!process.env.SECRET) {
     throw new Error('Missing SECRET variable in your .env, which is needed for express-sessions')
@@ -29,6 +32,8 @@ const createApp = () => {
       cookie: {
         secure: process.env.ENV === 'PROD',
         sameSite: process.env.ENV === 'PROD' ? 'none' : 'lax',
+        // sameSite: 'none',
+        // secure: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
       },

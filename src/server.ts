@@ -32,7 +32,6 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      console.log('@me session', req.session)
       if (!tokenType || !accessToken) return res.status(401)
       return next()
     },
