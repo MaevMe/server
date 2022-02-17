@@ -10,6 +10,7 @@ const createApp = () => {
       // origin: process.env.CLIENT || 'http://localhost:3000',
       origin: /maev\.me$/,
       credentials: true,
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     })
   )
 
