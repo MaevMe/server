@@ -11,14 +11,7 @@ const createApp = () => {
       // origin: process.env.CLIENT || 'http://localhost:3000',
       // origin: /^.+maev\.me$/,
       // origin: 'http://localhost:3000',
-      origin: (origin, callback) => {
-        if (origin && WHITELIST.indexOf(origin) !== -1) {
-          callback(null, true)
-        } else {
-          console.log('@origin', origin)
-          callback(new Error('Not allowed by CORS'))
-        }
-      },
+      origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me'],
       credentials: true,
     })
   )
