@@ -12,6 +12,10 @@ const createApp = () => {
     })
   )
 
+  app.use((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT || 'http://localhost:3000')
+  })
+
   if (!process.env.SECRET) {
     throw new Error('Missing SECRET variable in your .env, which is needed for express-sessions')
   }
