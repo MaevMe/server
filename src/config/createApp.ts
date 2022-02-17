@@ -4,12 +4,13 @@ import cors from 'cors'
 
 const createApp = () => {
   const app = express()
+  const CLIENT = process.env.CLIENT ? `${process.env.CLIENT}/` : null
 
   // if (process.env.ENV === 'PROD') app.set('trust proxy', 1)
 
   app.use(
     cors({
-      origin: process.env.CLIENT || 'http://localhost:3000',
+      origin: CLIENT || 'http://localhost:3000',
       credentials: true,
     })
   )
