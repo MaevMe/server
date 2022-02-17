@@ -7,7 +7,8 @@ const createApp = () => {
 
   app.use(
     cors({
-      origin: process.env.CLIENT || 'http://localhost:3000',
+      // origin: process.env.CLIENT || 'http://localhost:3000',
+      origin: /maev\.me$/,
       credentials: true,
     })
   )
