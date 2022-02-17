@@ -5,10 +5,7 @@ import cors from 'cors'
 const createApp = () => {
   const app = express()
 
-  // const server = __dirname.split('/').slice(0, -2).join('/')
-  // app.use(express.static(server + '/public'))
-
-  if (process.env.ENV === 'PROD') app.set('trust proxy', 1)
+  // if (process.env.ENV === 'PROD') app.set('trust proxy', 1)
 
   app.use(
     cors({
