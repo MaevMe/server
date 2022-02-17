@@ -33,9 +33,8 @@ const launch = async () => {
       const { tokenType, accessToken } = req.session
 
       console.log('@me session', req.session)
-      if (!tokenType || !accessToken) return
-
-      next()
+      if (!tokenType || !accessToken) return res.status(401)
+      return next()
     },
     async (req, res) => {
       const headers = api.getHeaders(req)
