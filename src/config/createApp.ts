@@ -7,14 +7,14 @@ const createApp = () => {
 
   app.use(
     cors({
-      // origin: process.env.CLIENT || 'http://localhost:3000',
+      origin: process.env.CLIENT || 'http://localhost:3000',
       credentials: true,
     })
   )
 
-  app.use((req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT || 'http://localhost:3000')
-  })
+  // app.use((req, res) => {
+  //   res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT || 'http://localhost:3000')
+  // })
 
   if (!process.env.SECRET) {
     throw new Error('Missing SECRET variable in your .env, which is needed for express-sessions')
