@@ -6,6 +6,7 @@ const createApp = () => {
   const app = express()
   const CLIENT = process.env.CLIENT ? `${process.env.CLIENT}/` : null
 
+  console.log('@CLIENT', CLIENT)
   // if (process.env.ENV === 'PROD') app.set('trust proxy', 1)
 
   app.use(
