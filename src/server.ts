@@ -1,6 +1,7 @@
 import createApp from './config/createApp'
 import useDiscordAuth from './config/useDiscordAuth'
 import api from './utils/api'
+import express from 'express'
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -15,13 +16,14 @@ declare module 'express-session' {
 
 const launch = async () => {
   const PORT = process.env.PORT || 5050
-  const app = createApp()
+  // const app = createApp()
+  const app = express()
 
-  useDiscordAuth(
-    app,
-    process.env.URL || 'http://localhost:3000',
-    process.env.CLIENT || 'http://localhost:3000'
-  )
+  // useDiscordAuth(
+  //   app,
+  //   process.env.URL || 'http://localhost:3000',
+  //   process.env.CLIENT || 'http://localhost:3000'
+  // )
 
   app.get('/', (req, res) => {
     res.send({ hello: 'world' })
@@ -32,7 +34,7 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      if (!tokenType || !accessToken) return res.status(401)
+      if (!tokenType || !accessToken) return res.status(401).send({ hello: 'world' })
       return next()
     },
     async (req, res) => {
