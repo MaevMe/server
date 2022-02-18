@@ -1,7 +1,6 @@
 import createApp from './config/createApp'
 import useDiscordAuth from './config/useDiscordAuth'
 import api from './utils/api'
-import express from 'express'
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -16,34 +15,33 @@ declare module 'express-session' {
 
 const launch = async () => {
   const PORT = process.env.PORT || 5050
-  // const app = createApp()
-  const app = express()
+  const app = createApp()
 
-  // useDiscordAuth(
-  //   app,
-  //   process.env.URL || 'http://localhost:3000',
-  //   process.env.CLIENT || 'http://localhost:3000'
-  // )
+  useDiscordAuth(
+    app,
+    process.env.URL || 'http://localhost:3000',
+    process.env.CLIENT || 'http://localhost:3000'
+  )
 
-  app.get('/me', (req, res) => {
+  app.get('/', (req, res) => {
     res.send({ hello: 'world' })
   })
 
-  // app.get(
-  //   '/me',
-  //   (req, res, next) => {
-  //     const { tokenType, accessToken } = req.session
+  app.get(
+    '/me',
+    (req, res, next) => {
+      const { tokenType, accessToken } = req.session
 
-  //     if (!tokenType || !accessToken) return res.status(401).send({ hello: 'world' })
-  //     return next()
-  //   },
-  //   async (req, res) => {
-  //     const headers = api.getHeaders(req)
-  //     const { data } = await api.discord.axios.get('https://discord.com/api/users/@me', { headers })
+      if (!tokenType || !accessToken) return res.status(401)
+      return next()
+    },
+    async (req, res) => {
+      const headers = api.getHeaders(req)
+      const { data } = await api.discord.axios.get('https://discord.com/api/users/@me', { headers })
 
-  //     return res.send(data)
-  //   }
-  // )
+      return res.send(data)
+    }
+  )
 
   app.listen(PORT, () => console.log(`🚀 Launched at ${PORT}`))
 }
