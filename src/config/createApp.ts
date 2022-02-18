@@ -11,7 +11,8 @@ const createApp = () => {
       // origin: process.env.CLIENT || 'http://localhost:3000',
       // origin: /^.+maev\.me$/,
       // origin: 'http://localhost:3000',
-      origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
+      // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
+      origin: 'https://maev.me',
       credentials: true,
     })
   )
