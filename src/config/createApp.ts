@@ -12,7 +12,7 @@ const createApp = () => {
       // origin: /^.+maev\.me$/,
       // origin: 'http://localhost:3000',
       // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
-      origin: 'https://www.maev.me',
+      origin: 'www.maev.me',
       credentials: true,
     })
   )
