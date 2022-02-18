@@ -5,13 +5,13 @@ import cors from 'cors'
 const createApp = () => {
   const app = express()
 
-  app.use(
-    cors({
-      // origin: process.env.CLIENT || 'http://localhost:3000',
-      // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
-      credentials: true,
-    })
-  )
+  // app.use(
+  //   cors({
+  //     // origin: process.env.CLIENT || 'http://localhost:3000',
+  //     // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
+  //     credentials: true,
+  //   })
+  // )
 
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*')
