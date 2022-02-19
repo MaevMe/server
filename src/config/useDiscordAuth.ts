@@ -33,6 +33,8 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
         scope,
       })
 
+      console.log('@req', req)
+
       try {
         // Deal with 401 response
         const { data } = await api.discord.axios.post('/oauth2/token', params)
@@ -44,7 +46,6 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
           req.session.save()
 
-          // return res.cookie('connect.sid', req.sessionID).redirect(HOME_PAGE)
           return res.redirect(HOME_PAGE)
         }
       } catch (error) {
