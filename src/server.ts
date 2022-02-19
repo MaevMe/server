@@ -27,12 +27,14 @@ const launch = async () => {
     res.send({ hello: 'world' })
   })
 
-  app.get(
+  app.patch(
     '/me',
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      if (!tokenType || !accessToken) return res.send(req.session)
+      if (!tokenType || !accessToken)
+        return res.send({ error: 'No tokenType or accessToken in session', session: req.session })
+
       return next()
     },
     async (req, res) => {
