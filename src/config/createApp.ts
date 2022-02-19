@@ -21,7 +21,6 @@ const createApp = () => {
   app.use(
     expressSession({
       secret: process.env.SECRET,
-      resave: false,
       cookie: {
         secure: process.env.ENV === 'PROD',
         sameSite: process.env.ENV === 'PROD' ? 'strict' : 'lax',
