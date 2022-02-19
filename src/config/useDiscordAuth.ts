@@ -42,7 +42,9 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
           req.session.tokenType = token_type
           req.session.accessToken = access_token
 
-          return res.cookie('loggedin', true).redirect(HOME_PAGE)
+          req.session.save()
+
+          return res.redirect(HOME_PAGE)
         }
       } catch (error) {
         console.error(error)
@@ -51,29 +53,6 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
     return res.redirect(HOME_PAGE)
   })
-
-  // Refresh function, when to run?
-  const refresh = async (req: Request, refreshToken: string) => {
-    const headers = api.getHeaders(req)
-
-    const params = new URLSearchParams({
-      client_id: CLIENT_ID as string,
-      client_secret: CLIENT_SECRET as string,
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token',
-    })
-
-    const { data } = await api.discord.axios.post('/oauth2/token', params, { headers })
-    const { token_type, access_token, refresh_token } = data
-
-    if (token_type && access_token && refresh_token) {
-      req.session.tokenType = token_type
-      req.session.accessToken = access_token
-      req.session.refreshToken = refresh_token
-    }
-
-    if (refresh_token) refresh(req, refresh_token)
-  }
 }
 
 export default useDiscordAuth

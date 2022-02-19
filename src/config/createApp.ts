@@ -1,38 +1,30 @@
 import express from 'express'
-import express_session from 'express-session'
-import cors from 'cors'
+import expressSession from 'express-session'
+import cookieParser from 'cookie-parser'
+import corsPackage from 'cors'
+
+const cors = {
+  origin: [/^.+maev\.me$/, 'https://maev.me', 'https://api.maev.me', 'https://www.maev.me/'],
+  credentials: true,
+}
 
 const createApp = () => {
   const app = express()
-  const WHITELIST = ['https://maev.me', 'https://api.maev.me', 'https://www.maev.me']
 
-  app.use(
-    cors({
-      // origin: process.env.CLIENT || 'http://localhost:3000',
-      // origin: /^.+maev\.me$/,
-      // origin: 'http://localhost:3000',
-      // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
-      // origin: 'www.maev.me',
-      credentials: true,
-    })
-  )
-
-  app.use((req, res) => {
-    res.header('Access-Control-Allow-Origin', '*')
-  })
+  app.use(corsPackage(cors))
+  app.use(cookieParser())
 
   if (!process.env.SECRET) {
-    throw new Error('Missing SECRET variable in your .env, which is needed for express-sessions')
+    throw new Error('Missing SECRET variable in .env, needed for express-sessions.')
   }
 
   app.use(
-    express_session({
+    expressSession({
       secret: process.env.SECRET,
+      resave: false,
       cookie: {
         secure: process.env.ENV === 'PROD',
-        sameSite: process.env.ENV === 'PROD' ? 'none' : 'lax',
-        // sameSite: 'none',
-        // secure: true,
+        sameSite: process.env.ENV === 'PROD' ? 'strict' : 'lax',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
       },
