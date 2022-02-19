@@ -30,6 +30,8 @@ const launch = async () => {
   app.patch(
     '/me',
     (req, res, next) => {
+      console.log(req.cookies['connect.sid'])
+
       const { tokenType, accessToken } = req.session
 
       if (!tokenType || !accessToken)
