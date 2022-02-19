@@ -32,7 +32,7 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      if (!tokenType || !accessToken) return res.status(401).send({ hello: 'error' })
+      if (!tokenType || !accessToken) return res.send({ hello: 'error' })
       return next()
     },
     async (req, res) => {
