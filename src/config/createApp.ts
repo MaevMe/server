@@ -6,16 +6,16 @@ const createApp = () => {
   const app = express()
   const WHITELIST = ['https://maev.me', 'https://api.maev.me', 'https://www.maev.me']
 
-  // app.use(
-  //   cors({
-  //     // origin: process.env.CLIENT || 'http://localhost:3000',
-  //     // origin: /^.+maev\.me$/,
-  //     // origin: 'http://localhost:3000',
-  //     // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
-  //     origin: 'www.maev.me',
-  //     credentials: true,
-  //   })
-  // )
+  app.use(
+    cors({
+      // origin: process.env.CLIENT || 'http://localhost:3000',
+      // origin: /^.+maev\.me$/,
+      // origin: 'http://localhost:3000',
+      // origin: ['https://maev.me', /^.+maev\.me$/, 'https://api.maev.me', 'https://www.maev.me/'],
+      // origin: 'www.maev.me',
+      credentials: true,
+    })
+  )
 
   app.use((req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
