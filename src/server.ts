@@ -17,11 +17,11 @@ const launch = async () => {
   const PORT = process.env.PORT || 5050
   const app = createApp()
 
-  // useDiscordAuth(
-  //   app,
-  //   process.env.URL || 'http://localhost:3000',
-  //   process.env.CLIENT || 'http://localhost:3000'
-  // )
+  useDiscordAuth(
+    app,
+    process.env.URL || 'http://localhost:3000',
+    process.env.CLIENT || 'http://localhost:3000'
+  )
 
   app.get('/', (req, res) => {
     res.send({ hello: 'world' })
