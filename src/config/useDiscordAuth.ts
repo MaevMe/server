@@ -33,7 +33,10 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
         scope,
       })
 
-      console.log('@req', req)
+      // console.log('@req', req)
+      console.log('@req-ogurl', req.originalUrl)
+      console.log('@req-baseurl', req.baseUrl)
+      console.log('@req-host', req.hostname)
 
       try {
         // Deal with 401 response
@@ -46,6 +49,8 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
           req.session.save()
 
+          // sockets let front end know,
+          // that user is stored locally on backend
           return res.redirect(HOME_PAGE)
         }
       } catch (error) {
