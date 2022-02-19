@@ -31,9 +31,6 @@ const launch = async () => {
     '/me',
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
-      const ok = res.cookie
-
-      console.log('@res.cookie', ok)
 
       if (!tokenType || !accessToken) return res.send(req.session)
       return next()
