@@ -5,6 +5,8 @@ import cors from 'cors'
 const createApp = () => {
   const app = express()
 
+  app.set('trust-proxy', 1)
+
   app.use(
     cors({
       origin: [/^.+maev\.me$/, 'https://maev.me', 'https://api.maev.me', 'https://www.maev.me/'],
