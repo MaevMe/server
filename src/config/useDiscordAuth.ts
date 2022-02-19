@@ -42,9 +42,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
           req.session.tokenType = token_type
           req.session.accessToken = access_token
 
-          console.log('added session content')
-
-          return res.cookie('loggedin', true).redirect(HOME_PAGE)
+          return res.redirect(HOME_PAGE)
         }
       } catch (error) {
         console.error(error)
