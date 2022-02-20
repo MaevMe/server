@@ -44,8 +44,6 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
           req.session.save()
 
-          console.log('@req', req.session)
-
           return res.redirect(HOME_PAGE)
         }
       } catch (error) {
