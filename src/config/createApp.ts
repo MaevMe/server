@@ -11,6 +11,7 @@ const cors = {
 const createApp = () => {
   const app = express()
 
+  app.enable('trust proxy')
   app.use(corsPackage(cors))
   app.use(cookieParser())
 
