@@ -42,7 +42,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
           req.session.save()
 
-          return res.cookie('token', access_token).redirect(HOME_PAGE)
+          return res.redirect(HOME_PAGE)
         }
       } catch (error) {
         console.error(error)
