@@ -14,15 +14,13 @@ const createApp = () => {
   app.use(corsPackage(cors))
   app.use(cookieParser())
 
-  if (!process.env.SECRET) {
-    throw new Error('Missing SECRET variable in .env, needed for express-sessions.')
-  }
+  if (!process.env.SECRET) throw new Error('🚨 Missing SECRET variable in .env')
 
   app.use(
     expressSession({
       secret: process.env.SECRET,
       cookie: {
-        secure: false,
+        secure: process.env.ENV === 'PROD',
         sameSite: process.env.ENV === 'PROD' ? 'strict' : 'lax',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,

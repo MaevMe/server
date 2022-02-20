@@ -13,14 +13,11 @@ declare module 'express-session' {
 }
 
 const launch = async () => {
+  const { URL, CLIENT } = process.env
   const PORT = process.env.PORT || 5050
   const app = createApp()
 
-  useDiscordAuth(
-    app,
-    process.env.URL || 'http://localhost:3000',
-    process.env.CLIENT || 'http://localhost:3000'
-  )
+  useDiscordAuth(app, URL || 'http://localhost:3000', CLIENT || 'http://localhost:3000')
 
   app.get('/', (req, res) => {
     res.send({ hello: 'world' })
@@ -31,7 +28,7 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      console.log('@req', req.session)
+      console.log('@token', req.cookies.get('token'))
 
       if (!tokenType || !accessToken)
         return res.send({ error: 'No tokenType or accessToken in session', session: req.session })

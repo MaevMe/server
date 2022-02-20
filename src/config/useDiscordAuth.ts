@@ -5,9 +5,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
   const { CLIENT_ID, CLIENT_SECRET } = process.env
   const scope = encodeURIComponent(['identify', 'guilds'].join(' '))
 
-  if (!CLIENT_ID || !CLIENT_SECRET) {
-    return console.error('🚨 Missing Client ID or Client Secret for Discord Authentication')
-  }
+  if (!CLIENT_ID || !CLIENT_SECRET) throw new Error('🚨 Missing Client ID or Client Secret')
 
   app.get('/forward', (req, res) => {
     const query = [
@@ -44,7 +42,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
 
           req.session.save()
 
-          return res.redirect(HOME_PAGE)
+          return res.cookie('token', access_token).redirect(HOME_PAGE)
         }
       } catch (error) {
         console.error(error)
