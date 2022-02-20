@@ -29,9 +29,9 @@ const launch = async () => {
   app.patch(
     '/me',
     (req, res, next) => {
-      console.log(req.cookies)
-
       const { tokenType, accessToken } = req.session
+
+      console.log('@req', req.session)
 
       if (!tokenType || !accessToken)
         return res.send({ error: 'No tokenType or accessToken in session', session: req.session })
