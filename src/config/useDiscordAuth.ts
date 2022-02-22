@@ -10,7 +10,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
   app.get('/forward', (req, res) => {
     const query = [
       `client_id=${CLIENT_ID}`,
-      `redirect_uri=${encodeURIComponent(REDIRECT_URI + '/callback')}`,
+      `redirect_uri=${encodeURIComponent(HOME_PAGE + '/callback')}`,
       'response_type=code',
       `scope=${scope}`,
     ].join('&')
