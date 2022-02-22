@@ -22,7 +22,7 @@ const createApp = () => {
       secret: process.env.SECRET,
       cookie: {
         secure: process.env.ENV === 'PROD',
-        sameSite: process.env.ENV === 'PROD' ? 'strict' : 'lax',
+        sameSite: 'none',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
         domain: 'maev.me',
