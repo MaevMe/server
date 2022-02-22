@@ -18,7 +18,7 @@ const useDiscordAuth = (app: Express, REDIRECT_URI: string, HOME_PAGE: string) =
     return res.redirect(api.discord.url + '/oauth2' + '/authorize' + '?' + query)
   })
 
-  app.patch('/callback', async (req, res) => {
+  app.get('/callback', async (req, res) => {
     const { code } = req.query
 
     if (code) {
