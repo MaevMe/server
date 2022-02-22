@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser'
 import corsPackage from 'cors'
 
 const cors = {
-  origin: [/^.+maev\.me$/, 'https://maev.me', 'https://api.maev.me', 'https://www.maev.me'],
+  origin: 'https://www.maev.me',
   credentials: true,
 }
 
