@@ -28,10 +28,13 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      console.log('@cookies', req.cookies)
+      console.log('@cookies', req.cookies['connect.sid'])
 
       if (!tokenType || !accessToken)
-        return res.send({ error: 'No tokenType or accessToken in session', session: req.session })
+        return res.send({
+          error: 'No tokenType or accessToken in session',
+          session: req.session,
+        })
 
       return next()
     },
