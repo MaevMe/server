@@ -13,7 +13,9 @@ const createApp = () => {
     })
   )
 
-  app.enable('trust proxy')
+  // trust proxy sets the session cookie on the backend
+  // app.enable('trust proxy')
+
   app.use(express.json())
   app.use(cookieParser())
 

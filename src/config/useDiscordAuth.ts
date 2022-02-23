@@ -41,9 +41,15 @@ const useDiscordAuth = (app: Express) => {
           req.session.tokenType = token_type
           req.session.accessToken = access_token
 
-          req.session.save()
+          // req.session.save()
 
-          return res.send({ session: req.session })
+          // .cookie('token', token, {
+          //   expires: new Date(Date.now() + 604800000),
+          //   secure: env.ENVIRONMENT === 'LIVE',
+          //   sameSite: env.ENVIRONMENT === 'LIVE' ? 'none' : 'lax',
+          //   httpOnly: true
+          // })
+          return res.cookie('access token', access_token).send({ session: req.session })
         }
 
         return res.send({ error: 'No tokens' })
