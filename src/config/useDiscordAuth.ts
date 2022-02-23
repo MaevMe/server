@@ -21,6 +21,7 @@ const useDiscordAuth = (app: Express) => {
   app.post('/callback', async (req, res) => {
     const { code } = req.body
 
+    console.log('@code backend:', code)
     if (code) {
       const params = new URLSearchParams({
         client_id: CLIENT_ID as string,
