@@ -19,7 +19,7 @@ const launch = async () => {
   useDiscordAuth(app)
 
   app.get('/', (req, res) => {
-    res.send({ hello: 'world2' })
+    res.send({ hello: 'world' })
   })
 
   app.patch(
@@ -27,21 +27,20 @@ const launch = async () => {
     (req, res, next) => {
       const { tokenType, accessToken } = req.session
 
-      if (!tokenType || !accessToken)
-        return res.send({
-          error: 'No tokenType or accessToken in session',
-          session: req.session,
-        })
+      console.log('@me, session:', req.session)
+
+      if (!tokenType || !accessToken) return res.send({ error: 'No tokens stored in session' })
 
       return next()
     },
     async (req, res) => {
       const { tokenType, accessToken } = req.session
+
       const headers = {
         authorization: `${tokenType} ${accessToken}`,
       }
-      const { data } = await axios.get('https://discord.com/api/users/@me', { headers })
 
+      const { data } = await axios.get('https://discord.com/api/users/@me', { headers })
       return res.send(data)
     }
   )
