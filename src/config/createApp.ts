@@ -8,7 +8,7 @@ const createApp = () => {
 
   app.use(
     corsPackage({
-      origin: 'https://base-client.vercel.app',
+      origin: 'https://www.maev.me',
       credentials: true,
     })
   )
