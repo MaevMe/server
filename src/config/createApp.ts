@@ -24,6 +24,7 @@ const createApp = () => {
         sameSite: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
+        domain: 'maev.me',
       },
     })
   )
