@@ -21,7 +21,7 @@ const createApp = () => {
       secret: 'cat',
       cookie: {
         secure: true,
-        sameSite: 'none',
+        sameSite: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
       },
