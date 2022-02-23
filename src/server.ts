@@ -1,6 +1,6 @@
 import createApp from './config/createApp'
 import useDiscordAuth from './config/useDiscordAuth'
-import api from './utils/api'
+import axios from 'axios'
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -13,14 +13,13 @@ declare module 'express-session' {
 }
 
 const launch = async () => {
-  const { URL, CLIENT } = process.env
   const PORT = process.env.PORT || 5050
   const app = createApp()
 
-  useDiscordAuth(app, URL || 'http://localhost:3000', CLIENT || 'http://localhost:3000')
+  useDiscordAuth(app)
 
   app.get('/', (req, res) => {
-    res.send({ hello: 'world' })
+    res.send({ hello: 'world2' })
   })
 
   app.patch(
@@ -37,8 +36,11 @@ const launch = async () => {
       return next()
     },
     async (req, res) => {
-      const headers = api.getHeaders(req)
-      const { data } = await api.discord.axios.get('https://discord.com/api/users/@me', { headers })
+      const { tokenType, accessToken } = req.session
+      const headers = {
+        authorization: `${tokenType} ${accessToken}`,
+      }
+      const { data } = await axios.get('https://discord.com/api/users/@me', { headers })
 
       return res.send(data)
     }

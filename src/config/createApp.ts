@@ -3,29 +3,27 @@ import expressSession from 'express-session'
 import cookieParser from 'cookie-parser'
 import corsPackage from 'cors'
 
-const cors = {
-  origin: 'https://www.maev.me',
-  credentials: true,
-}
-
 const createApp = () => {
   const app = express()
 
-  // app.enable('trust proxy')
-  app.use(corsPackage(cors))
-  app.use(cookieParser())
+  app.use(
+    corsPackage({
+      origin: 'https://base-client.vercel.app',
+      credentials: true,
+    })
+  )
 
-  if (!process.env.SECRET) throw new Error('🚨 Missing SECRET variable in .env')
+  app.use(express.json())
+  app.use(cookieParser())
 
   app.use(
     expressSession({
-      secret: process.env.SECRET,
+      secret: 'cat',
       cookie: {
-        secure: process.env.ENV === 'PROD',
-        sameSite: process.env.ENV === 'PROD' ? 'strict' : 'lax',
+        secure: true,
+        sameSite: 'none',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
-        domain: 'maev.me',
       },
     })
   )
