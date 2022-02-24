@@ -25,15 +25,13 @@ const launch = async () => {
   app.patch(
     '/me',
     (req, res, next) => {
-      // const { tokenType, accessToken } = req.session
+      const { tokenType, accessToken } = req.session
 
-      const accessToken = req.cookies['access token']
-      console.log('@me, session:', req.session)
+      if (!tokenType || !accessToken) {
+        return res.send({ error: 'No tokens stored in session' })
+      }
 
-      console.log('@cookiesme', req.cookies)
-      // if (!tokenType || !accessToken) return res.send({ error: 'No tokens stored in session' })
-      return res.send({ error: 'No tokens stored in session' })
-      // return next()
+      return next()
     },
     async (req, res) => {
       const { tokenType, accessToken } = req.session
