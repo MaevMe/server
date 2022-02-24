@@ -18,6 +18,7 @@ const createApp = () => {
 
   app.use(express.json())
   app.use(cookieParser())
+  app.set('trust proxy', true)
 
   app.use(
     expressSession({
