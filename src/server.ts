@@ -19,7 +19,7 @@ const launch = async () => {
   useDiscordAuth(app)
 
   app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html')
+    res.send('Hello world!')
   })
 
   app.patch(
