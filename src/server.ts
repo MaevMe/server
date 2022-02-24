@@ -1,5 +1,6 @@
 import createApp from './config/createApp'
 import useDiscordAuth from './config/useDiscordAuth'
+import connectMongo from './config/connectMongo'
 import axios from 'axios'
 
 import dotenv from 'dotenv'
@@ -13,6 +14,8 @@ declare module 'express-session' {
 }
 
 const launch = async () => {
+  await connectMongo()
+
   const PORT = process.env.PORT || 5050
   const app = createApp()
 
