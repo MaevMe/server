@@ -22,6 +22,7 @@ const createApp = () => {
 
   app.use(express.json())
   app.use(cookieParser())
+  app.set('trust proxy', 10)
 
   const MongoStore = mongoStore(expressSession)
   const store = new MongoStore({
