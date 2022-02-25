@@ -12,7 +12,7 @@ export default new Route(
     const user = (await axios.get('https://discord.com/api/users/@me', { headers })).data
     const guilds = (await axios.get('https://discord.com/api/users/@me/guilds', { headers })).data
 
-    user.guilds = guilds
+    user.guilds = guilds.filter((guild: any) => guild.permissions & 0x8)
 
     return res.send(user)
   },
