@@ -25,7 +25,7 @@ const launch = async () => {
     res.send('Hello world!')
   })
 
-  app.patch(
+  app.post(
     '/me',
     (req, res, next) => {
       console.log('@session, me', req.sessionID)
