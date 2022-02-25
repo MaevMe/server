@@ -11,7 +11,17 @@ const createApp = () => {
 
   app.use(
     corsPackage({
-      origin: 'https://www.maev.me',
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        const whitelist = ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me']
+
+        if (whitelist.indexOf(origin) === -1) {
+          const message = `The CORS policy for this origin doesn't allow access from the particular origin.`
+          return callback(new Error(message), false)
+        }
+
+        return callback(null, true)
+      },
       credentials: true,
     })
   )
