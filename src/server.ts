@@ -43,8 +43,12 @@ const launch = async () => {
         authorization: `${tokenType} ${accessToken}`,
       }
 
-      const { data } = await axios.get('https://discord.com/api/users/@me', { headers })
-      return res.send(data)
+      const user = (await axios.get('https://discord.com/api/users/@me', { headers })).data
+      const guilds = (await axios.get('https://discord.com/api/users/@me/guilds', { headers })).data
+
+      user.guilds = guilds
+
+      return res.send(user)
     }
   )
 
