@@ -6,18 +6,28 @@ class Route {
   params?: string[]
   auth?: boolean
 
-  constructor (execute: Execute, options?: { params?: string[], auth?: boolean }) {
-    this.auth = false
+  constructor(execute: Execute, options?: { params?: string[]; auth?: boolean }) {
+    this.auth = this.auth
     this.execute = execute
 
-    if (options) { 
+    if (options) {
       if (options.params) this.params = options.params
       if (options.auth) this.auth = options.auth
     }
   }
 
-  authorization (req: Request, res: Response, next: NextFunction): Promise<NextFunction | Response> | NextFunction | Response | void {
-    next()
+  authorization(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<NextFunction | Response> | NextFunction | Response | void {
+    const { tokenType, accessToken } = req.session
+
+    if (!tokenType || !accessToken) {
+      return res.send({ error: 'No tokens stored in session' })
+    }
+
+    return next()
   }
 }
 
