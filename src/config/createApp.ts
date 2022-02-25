@@ -2,7 +2,6 @@ import express from 'express'
 import expressSession from 'express-session'
 import cookieParser from 'cookie-parser'
 import corsPackage from 'cors'
-// const MongoDBStore = require('connect-mongodb-session')(session);
 import mongoStore from 'connect-mongodb-session'
 import mongoose from 'mongoose'
 
@@ -31,7 +30,7 @@ const createApp = () => {
 
   app.use(express.json())
   app.use(cookieParser(process.env.SECRET))
-  // app.set('trust proxy', 10)
+  app.set('trust proxy', 1)
 
   const MongoStore = mongoStore(expressSession)
   const store = new MongoStore({
