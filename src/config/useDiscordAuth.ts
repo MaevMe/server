@@ -55,7 +55,6 @@ const useDiscordAuth = (app: Express) => {
           .send({ session: req.session })
       } catch (error) {
         console.error('@callback:', error)
-        return res.status(500)
       }
     }
 
