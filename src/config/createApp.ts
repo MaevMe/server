@@ -13,6 +13,7 @@ const createApp = () => {
     corsPackage({
       origin: (origin, callback) => {
         if (!origin) return callback(null, true)
+        console.log('@origin', origin)
         const whitelist = ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me']
 
         if (whitelist.indexOf(origin) === -1) {
