@@ -2,10 +2,10 @@ import axios from 'axios'
 import { Express } from 'express'
 
 const useDiscordAuth = (app: Express) => {
-  const { CLIENT_ID, CLIENT_SECRET } = process.env
   const scope = encodeURIComponent(['identify', 'guilds'].join(' '))
 
-  if (!CLIENT_ID || !CLIENT_SECRET) throw new Error('🚨 Missing Client ID or Client Secret')
+  const { CLIENT_ID, CLIENT_SECRET } = process.env
+  if (!CLIENT_ID || !CLIENT_SECRET) throw new Error('🚨 Missing Client ID or Client Secret in .env')
 
   app.get('/forward', (req, res) => {
     const query = [
@@ -21,7 +21,6 @@ const useDiscordAuth = (app: Express) => {
   app.post('/callback', async (req, res) => {
     const { code } = req.body
 
-    console.log('@code backend:', code)
     if (code) {
       const params = new URLSearchParams({
         client_id: CLIENT_ID as string,
@@ -33,28 +32,19 @@ const useDiscordAuth = (app: Express) => {
       })
 
       try {
-        // Deal with 401 response
+        // TODO: Deal with 401 response
         const { data } = await axios.post('https://discord.com/api/oauth2/token', params)
         const { token_type, access_token } = data
 
-        if (token_type && access_token) {
-          req.session.tokenType = token_type
-          req.session.accessToken = access_token
+        if (!token_type || !access_token) return res.send({ error: 'No token' })
 
-          // req.session.save()
+        req.session.tokenType = token_type
+        req.session.accessToken = access_token
+        req.session.save()
 
-          // .cookie('token', token, {
-          //   expires: new Date(Date.now() + 604800000),
-          //   secure: env.ENVIRONMENT === 'LIVE',
-          //   sameSite: env.ENVIRONMENT === 'LIVE' ? 'none' : 'lax',
-          //   httpOnly: true
-          // })
-          return res.cookie('access token', access_token).send({ session: req.session })
-        }
-
-        return res.send({ error: 'No tokens' })
+        return res.send({ session: req.session })
       } catch (error) {
-        console.error('@CALLBACK ERROR:', error)
+        console.error('@callback:', error)
       }
     }
 

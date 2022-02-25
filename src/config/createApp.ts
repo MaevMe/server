@@ -2,26 +2,31 @@ import express from 'express'
 import expressSession from 'express-session'
 import cookieParser from 'cookie-parser'
 import corsPackage from 'cors'
+import createStore from './createStore'
 
 const createApp = () => {
+  if (!process.env.SECRET) throw new Error('🚨 Missing Secret in .env')
+
   const app = express()
+  const store = createStore()
 
   app.use(
     corsPackage({
-      origin: 'https://www.maev.me',
+      origin: ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me'],
       credentials: true,
     })
   )
 
-  // trust proxy sets the session cookie on the backend
-  // app.enable('trust proxy')
-
   app.use(express.json())
-  app.use(cookieParser())
+  app.use(cookieParser(process.env.SECRET))
+  app.set('trust proxy', 1)
 
   app.use(
     expressSession({
-      secret: 'cat',
+      store,
+      secret: process.env.SECRET,
+      resave: false,
+      saveUninitialized: false,
       cookie: {
         secure: true,
         sameSite: true,
