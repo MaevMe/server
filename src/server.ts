@@ -19,7 +19,7 @@ const launch = async () => {
 
   const PORT = process.env.PORT || 5050
   const app = createApp()
-  await createRoutes('./src/routes', app, 'routes')
+  await createRoutes(process.env.ENV ? './build/routes' : './src/routes', app, 'routes')
 
   useDiscordAuth(app)
 
