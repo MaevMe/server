@@ -28,6 +28,7 @@ const launch = async () => {
   app.patch(
     '/me',
     (req, res, next) => {
+      console.log('@sessionid', req.sessionID)
       const { tokenType, accessToken } = req.session
 
       if (!tokenType || !accessToken) {
