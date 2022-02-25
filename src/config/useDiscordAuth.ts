@@ -45,14 +45,17 @@ const useDiscordAuth = (app: Express) => {
 
         // return res.cookie('access token', access_token).send({ session: req.session })
 
-        return res.cookie('accessToken', access_token, {
-          expires: new Date(Date.now() + 604800000),
-          secure: true,
-          sameSite: true,
-          httpOnly: true,
-        })
+        return res
+          .cookie('accessToken', access_token, {
+            expires: new Date(Date.now() + 604800000),
+            secure: true,
+            sameSite: true,
+            httpOnly: true,
+          })
+          .send({ session: req.session })
       } catch (error) {
         console.error('@callback:', error)
+        return res.status(500)
       }
     }
 
