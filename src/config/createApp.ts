@@ -49,8 +49,8 @@ const createApp = () => {
     expressSession({
       store,
       secret: process.env.SECRET,
-      resave: true,
-      saveUninitialized: true,
+      resave: false,
+      saveUninitialized: false,
       cookie: {
         secure: true,
         sameSite: true,
