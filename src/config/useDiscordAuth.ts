@@ -44,7 +44,7 @@ const useDiscordAuth = (app: Express) => {
         req.session.accessToken = access_token
         req.session.save()
 
-        // return res.cookie('access token', access_token).send({ session: req.session })
+        return res.send({ session: req.session })
 
         return res
           .cookie('accessToken', access_token, {
