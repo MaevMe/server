@@ -38,22 +38,11 @@ const useDiscordAuth = (app: Express) => {
 
         if (!token_type || !access_token) return res.send({ error: 'No token' })
 
-        console.log('@session, callback:', req.sessionID)
-        // TODO: Persist session across requests
         req.session.tokenType = token_type
         req.session.accessToken = access_token
         req.session.save()
 
         return res.send({ session: req.session })
-
-        return res
-          .cookie('accessToken', access_token, {
-            expires: new Date(Date.now() + 604800000),
-            secure: true,
-            sameSite: true,
-            httpOnly: true,
-          })
-          .send({ session: req.session })
       } catch (error) {
         console.error('@callback:', error)
       }

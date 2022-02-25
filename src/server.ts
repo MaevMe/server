@@ -28,7 +28,6 @@ const launch = async () => {
   app.post(
     '/me',
     (req, res, next) => {
-      console.log('@session, me', req.sessionID)
       const { tokenType, accessToken } = req.session
 
       if (!tokenType || !accessToken) {
