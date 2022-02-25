@@ -7,6 +7,8 @@ import mongoStore from 'connect-mongodb-session'
 import mongoose from 'mongoose'
 
 const createApp = () => {
+  if (!process.env.SECRET || !process.env.MONGO) throw new Error('🚨 Missing Secret in .env')
+
   const app = express()
 
   app.use(
@@ -27,29 +29,25 @@ const createApp = () => {
     })
   )
 
-  if (!process.env.SECRET || !process.env.MONGO) throw new Error('🚨 Missing Secret in .env')
-  // trust proxy sets the session cookie on the backend
-  // app.enable('trust proxy')
-
   app.use(express.json())
   app.use(cookieParser())
   // app.set('trust proxy', 10)
 
-  // const MongoStore = mongoStore(expressSession)
-  // const store = new MongoStore({
-  //   uri: process.env.MONGO,
-  //   collection: 'sessions',
-  // })
+  const MongoStore = mongoStore(expressSession)
+  const store = new MongoStore({
+    uri: process.env.MONGO,
+    collection: 'sessions',
+  })
 
-  // const connection = mongoose.connection
+  const connection = mongoose.connection
 
-  // connection.on('error', err => {
-  //   console.log('@mongo connection', err)
-  // })
+  connection.on('error', err => {
+    console.log('@mongo connection', err)
+  })
 
   app.use(
     expressSession({
-      // store,
+      store,
       secret: process.env.SECRET,
       resave: true,
       saveUninitialized: true,
