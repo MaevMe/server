@@ -5,6 +5,7 @@ const serverSchema = new Schema({
   tempVoiceChannels: {
     active: Boolean,
     createChannel: String,
+    // add default naming format to models
     namingFormat: String,
     categoryID: String,
   },
