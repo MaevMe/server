@@ -12,6 +12,7 @@ export default new Route(
     const headers = {
       authorization: `${tokenType} ${accessToken}`,
     }
+    console.log(headers)
 
     try {
       const server = await Server.findOne({ id: serverID })
