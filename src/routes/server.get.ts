@@ -18,6 +18,7 @@ export default new Route(
       const channels = (
         await axios.get(`https://discord.com/api/guilds/${serverID}/channels`, { headers })
       ).data
+      console.log(channels)
       server.voiceChannels = channels
         .filter((channel: any) => channel.type === 2)
         .map((channel: any) => {
