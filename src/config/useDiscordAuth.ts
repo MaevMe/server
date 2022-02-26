@@ -32,7 +32,6 @@ const useDiscordAuth = (app: Express) => {
       })
 
       try {
-        // TODO: Deal with 401 response
         const { data } = await axios.post('https://discord.com/api/oauth2/token', params)
         const { token_type, access_token } = data
 

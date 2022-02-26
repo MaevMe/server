@@ -22,8 +22,8 @@ export default new Route(
       if (!server) return res.status(404).send({ err: 'No server' })
       if (!channels) return res.status(404).send({ err: 'No channels' })
 
-      const voiceChannels = channels.filter(channel => channel.type === 2).map(map)
-      const categories = channels.filter(channel => channel.type === 4).map(map)
+      const voiceChannels = channels.filter(({ type }) => type === 2).map(map)
+      const categories = channels.filter(({ type }) => type === 4).map(map)
 
       return res.status(200).send({ ...server._doc, categories, voiceChannels })
     } catch (err) {
