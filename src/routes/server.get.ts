@@ -1,26 +1,16 @@
 import Route from '../structure/Route'
 import Server from '../models/Server'
-import axios from 'axios'
+import discord from '../utils/discord'
 
 export default new Route(
   async (req, res) => {
+    // FIX: 401 Response
     const { serverID } = req.params
-    console.log('serverID: ', serverID)
-
-    const { tokenType, accessToken } = req.session
-
-    const headers = {
-      authorization: `${tokenType} ${accessToken}`,
-    }
-    console.log(headers)
+    const headers = discord.getHeaders(req, true)
 
     try {
       const server = await Server.findOne({ id: serverID })
-      console.log('AFTER FIND ONE')
-      const channels = (
-        await axios.get(`https://discord.com/api/guilds/${serverID}/channels`, { headers })
-      ).data
-      console.log('channels: ', channels)
+      const channels = (await discord.api.get(`/guilds/${serverID}/channels`, { headers })).data
 
       server.voiceChannels = channels
         .filter((channel: any) => channel.type === 2)
@@ -33,7 +23,6 @@ export default new Route(
         .map((channel: any) => {
           channel.id, channel.name
         })
-      console.log('server: ', server)
 
       res.send(server)
     } catch (err) {
@@ -41,5 +30,5 @@ export default new Route(
       res.status(500).send({ err })
     }
   },
-  { auth: true, params: ['serverID'] }
+  { withAuthorization: true, params: ['serverID'] }
 )

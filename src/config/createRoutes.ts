@@ -21,13 +21,16 @@ const createRoutes = async (dirPath: string, app: Application, mainFolderName: s
 
       for (const { name } of directoryFiles) {
         const content = await import(`${resolvedPath}/${file.name}/${name}`)
-        const { params, auth, authorization, execute }: Route = content['default']
+        const { params, withAuthorization, authorization, execute }: Route = content['default']
 
         const [fileName, method] = name.split('.')
         const paramsPath = params ? `:${params.join('/:')}` : ''
 
-        if (auth) router[method as Methods](`/${fileName}/${paramsPath}`, authorization, execute)
-        if (!auth) router[method as Methods](`/${fileName}/${paramsPath}`, execute)
+        if (withAuthorization) {
+          router[method as Methods](`/${fileName}/${paramsPath}`, authorization, execute)
+        } else {
+          router[method as Methods](`/${fileName}/${paramsPath}`, execute)
+        }
       }
 
       app.use(`/${file.name}`, router)
@@ -37,15 +40,18 @@ const createRoutes = async (dirPath: string, app: Application, mainFolderName: s
       }
     } else {
       const content = await import(`${resolvedPath}/${file.name}`)
-      const { params, auth, authorization, execute }: Route = content['default']
+      const { params, withAuthorization, authorization, execute }: Route = content['default']
 
       const [fileName, method] = file.name.split('.')
       const nestedPath = resolvedPath.split(mainFolderName)[1]
       const paramsPath = params ? `:${params.join('/:')}` : ''
       const path = `${nestedPath && nestedPath}/${fileName}`
 
-      if (auth) app[method as Methods](`${path}/${paramsPath}`, authorization, execute)
-      if (!auth) app[method as Methods](`${path}/${paramsPath}`, execute)
+      if (withAuthorization) {
+        app[method as Methods](`${path}/${paramsPath}`, authorization, execute)
+      } else {
+        app[method as Methods](`${path}/${paramsPath}`, execute)
+      }
     }
   }
 }

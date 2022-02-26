@@ -15,5 +15,5 @@ export default new Route(
       res.status(500).send({ err })
     }
   },
-  { auth: true, params: ['mongoServerID'] }
+  { withAuthorization: true, params: ['mongoServerID'] }
 )

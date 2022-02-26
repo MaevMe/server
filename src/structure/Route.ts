@@ -4,15 +4,15 @@ import type Execute from '../types/Execute'
 class Route {
   execute: Execute
   params?: string[]
-  auth?: boolean
+  withAuthorization?: boolean
 
-  constructor(execute: Execute, options?: { params?: string[]; auth?: boolean }) {
-    this.auth = this.auth
+  constructor(execute: Execute, options?: { params?: string[]; withAuthorization?: boolean }) {
+    this.withAuthorization = this.withAuthorization
     this.execute = execute
 
     if (options) {
       if (options.params) this.params = options.params
-      if (options.auth) this.auth = options.auth
+      if (options.withAuthorization) this.withAuthorization = options.withAuthorization
     }
   }
 
