@@ -10,9 +10,10 @@ export default new Route(
 
     try {
       const updatedServer = await Server.findByIdAndUpdate(mongoServerID, server)
-      res.send(updatedServer)
+      return res.status(200).send(updatedServer)
     } catch (err) {
-      res.status(500).send({ err })
+      console.error('@server.post', err)
+      return res.status(500).send({ err })
     }
   },
   { withAuthorization: true, params: ['mongoServerID'] }

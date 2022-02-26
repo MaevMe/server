@@ -12,7 +12,7 @@ export default new Route(
       const server = await Server.findOne({ id: serverID })
       const channels = (await discord.api.get(`/guilds/${serverID}/channels`, { headers })).data
 
-      if (!server) res.status(404).send({ err: 'No server' })
+      if (!server) return res.status(404).send({ err: 'No server' })
       console.log('@server', server)
 
       server.voiceChannels = channels
@@ -27,10 +27,10 @@ export default new Route(
           channel.id, channel.name
         })
 
-      res.send(server)
+      return res.status(200).send(server)
     } catch (err) {
-      console.error(err)
-      res.status(500).send({ err })
+      console.error('@server.get', err)
+      return res.status(500).send({ err })
     }
   },
   { withAuthorization: true, params: ['serverID'] }
