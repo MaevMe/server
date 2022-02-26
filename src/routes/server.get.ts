@@ -12,6 +12,9 @@ export default new Route(
       const server = await Server.findOne({ id: serverID })
       const channels = (await discord.api.get(`/guilds/${serverID}/channels`, { headers })).data
 
+      if (!server) res.status(404).send({ err: 'No server' })
+      console.log('@server', server)
+
       server.voiceChannels = channels
         .filter((channel: any) => channel.type === 2)
         .map((channel: any) => {
