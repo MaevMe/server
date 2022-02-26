@@ -34,6 +34,7 @@ export default new Route(
 
       res.send(server)
     } catch (err) {
+      console.error(err)
       res.status(500).send({ err })
     }
   },
