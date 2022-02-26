@@ -15,17 +15,18 @@ export default new Route(
 
     try {
       const server = await Server.findOne({ id: serverID })
+      console.log('AFTER FIND ONE')
       const channels = (
         await axios.get(`https://discord.com/api/guilds/${serverID}/channels`, { headers })
       ).data
-      console.log(channels)
+      console.log('channels: ', channels)
       server.voiceChannels = channels
         .filter((channel: any) => channel.type === 2)
         .map((channel: any) => {
           channel.id, channel.name
         })
       server.categories = channels
-        .filter((channel: any) => channel.type === 2)
+        .filter((channel: any) => channel.type === 4)
         .map((channel: any) => {
           channel.id, channel.name
         })
