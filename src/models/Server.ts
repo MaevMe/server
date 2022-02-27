@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
+import Second from '../types/Second'
 
-const serverSchema = new Schema({
+const serverSchema = new Schema<Second>({
   id: String,
   tempVoiceChannels: {
     active: Boolean,
@@ -13,4 +14,4 @@ const serverSchema = new Schema({
   },
 })
 
-export default model('Server', serverSchema)
+export default model<Second>('Server', serverSchema)

@@ -1,69 +1,67 @@
 import Route from '../structure/Route'
 import Server from '../models/Server'
 import discord from '../utils/discord'
-import mongoose from 'mongoose'
 import type ServerType from '../types/Server'
 
 export default new Route(
   async (req, res) => {
-    const { serverData } = req.body
-    const { mongoServerID } = req.params
+    const { guildID } = req.params
+    const newServer = req.body
     const headers = discord.getHeaders(req)
 
-    console.log(serverData)
+    const { _id, tempVoiceChannels: newSettings, id } = newServer as ServerType
+    const namingFormat = newSettings.namingFormat.replace(/[ ]*\|[ ]*/gm, '┃')
 
-    const { voiceChannels, categories, createChannelsChecked, ...server } =
-      serverData as ServerType & { createChannelsChecked: boolean }
+    const existingServer = await Server.findById(_id)
+    if (!existingServer) return res.status(404).send({ err: 'No server in mongodb' })
 
-    server.tempVoiceChannels.namingFormat = server.tempVoiceChannels.namingFormat.replace(
-      /[ ]*\|[ ]*/gm,
-      '┃'
-    )
+    existingServer.tempVoiceChannels.namingFormat = namingFormat
+    const { tempVoiceChannels: oldSettings } = existingServer
 
     try {
-      if (createChannelsChecked && !server.tempVoiceChannels.usingCreatedChannels) {
+      if (!oldSettings.usingCreatedChannels && newSettings.usingCreatedChannels) {
         const createdCategory = (
           await discord.api.post(
-            `guilds/${mongoServerID}`,
+            `guilds/${id}`,
             { name: 'Temporary Voice Channels', type: 4 },
             { headers }
           )
         ).data
-        server.tempVoiceChannels.categoryID = createdCategory.id
 
         const createdChannel = (
           await discord.api.post(
-            `guilds/${mongoServerID}`,
+            `guilds/${id}`,
             { name: 'Join to Create a VC', type: 2, parent_id: createdCategory.id },
             { headers }
           )
         ).data
-        server.tempVoiceChannels.createChannel = createdChannel.id
 
-        server.tempVoiceChannels.usingCreatedChannels = true
-      } else if (!createChannelsChecked && server.tempVoiceChannels.usingCreatedChannels) {
-        const oldServer = await Server.findById(mongoServerID)
-
-        if (oldServer.createChannel !== server.tempVoiceChannels.createChannel) {
-          await discord.api.delete(`/channels/${oldServer.createChannel}`, { headers })
+        existingServer.tempVoiceChannels.categoryID = createdCategory.id
+        existingServer.tempVoiceChannels.createChannel = createdChannel.id
+        existingServer.tempVoiceChannels.usingCreatedChannels = true
+      } else if (oldSettings.usingCreatedChannels && !newSettings.usingCreatedChannels) {
+        if (oldSettings.createChannel !== newSettings.createChannel) {
+          await discord.api.delete(`/channels/${oldSettings.createChannel}`, { headers })
         }
 
-        if (oldServer.categoryID !== server.tempVoiceChannels.categoryID) {
-          await discord.api.delete(`/channels/${oldServer.categoryID}`, { headers })
+        if (oldSettings.categoryID !== newSettings.categoryID) {
+          await discord.api.delete(`/channels/${oldSettings.categoryID}`, { headers })
         }
 
-        server.tempVoiceChannels.usingCreatedChannels = false
+        existingServer.tempVoiceChannels.categoryID = newSettings.categoryID
+        existingServer.tempVoiceChannels.createChannel = newSettings.createChannel
+        existingServer.tempVoiceChannels.usingCreatedChannels = false
+      } else {
+        existingServer.tempVoiceChannels.categoryID = newSettings.categoryID
+        existingServer.tempVoiceChannels.createChannel = newSettings.createChannel
       }
 
-      const updatedServer = await Server.findByIdAndUpdate(
-        new mongoose.Types.ObjectId(server._id),
-        server
-      )
+      const updatedServer = await existingServer.save()
       return res.status(200).send(updatedServer)
     } catch (err) {
       console.error('@server.post', err)
       return res.status(500).send({ err })
     }
   },
-  { withAuthorization: true, params: ['mongoServerID'] }
+  { withAuthorization: true, params: ['guildID'] }
 )
