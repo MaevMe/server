@@ -1,7 +1,6 @@
 import createApp from './config/createApp'
 import useDiscordAuth from './config/useDiscordAuth'
 import connectMongo from './config/connectMongo'
-import axios from 'axios'
 import createRoutes from './config/createRoutes'
 
 import dotenv from 'dotenv'
@@ -17,9 +16,11 @@ declare module 'express-session' {
 const launch = async () => {
   await connectMongo()
 
+  const { ENV } = process.env
   const PORT = process.env.PORT || 5050
   const app = createApp()
-  await createRoutes(process.env.ENV ? './build/routes' : './src/routes', app, 'routes')
+
+  await createRoutes(ENV === 'production' ? './build/routes' : './src/routes', app, 'routes')
 
   useDiscordAuth(app)
 
