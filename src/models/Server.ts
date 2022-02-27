@@ -7,6 +7,9 @@ const serverSchema = new Schema({
     createChannel: String,
     namingFormat: String,
     categoryID: String,
+    userLimit: Number,
+    includeTextChannel: Boolean,
+    usingCreatedChannels: Boolean,
   },
 })
 
