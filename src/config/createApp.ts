@@ -4,25 +4,27 @@ import cookieParser from 'cookie-parser'
 import corsPackage from 'cors'
 import createStore from './createStore'
 
+// TODO: Test origin variable and samesite setting to true/false rather than true/lax
+
 const createApp = () => {
-  if (!process.env.SECRET) throw new Error('🚨 Missing Secret in .env')
+  if (!process.env.SECRET || !process.env.CLIENT) {
+    throw new Error('🚨 Missing Secret or Client in .env')
+  }
 
   const app = express()
   const store = createStore()
 
   app.use(
     corsPackage({
-      origin:
-        process.env.ENV === 'production'
-          ? ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me']
-          : 'localhost:3000',
+      origin: process.env.CLIENT,
       credentials: true,
     })
   )
 
   app.use(express.json())
   app.use(cookieParser(process.env.SECRET))
-  app.set('trust proxy', 1)
+
+  if (process.env.ENV === 'production') app.set('trust proxy', 1)
 
   app.use(
     expressSession({
@@ -31,8 +33,8 @@ const createApp = () => {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true,
-        sameSite: process.env.ENV === 'production' ? true : 'lax',
+        secure: process.env.ENV === 'production',
+        sameSite: process.env.ENV === 'production',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
       },

@@ -2,15 +2,17 @@ import axios from 'axios'
 import { Express } from 'express'
 
 const useDiscordAuth = (app: Express) => {
+  const { CLIENT_ID, CLIENT_SECRET, CLIENT } = process.env
   const scope = encodeURIComponent(['identify', 'guilds'].join(' '))
 
-  const { CLIENT_ID, CLIENT_SECRET } = process.env
-  if (!CLIENT_ID || !CLIENT_SECRET) throw new Error('🚨 Missing Client ID or Client Secret in .env')
+  if (!CLIENT_ID || !CLIENT_SECRET || !CLIENT) {
+    throw new Error('🚨 Missing Client ID or Client Secret in .env')
+  }
 
   app.get('/forward', (req, res) => {
     const query = [
       `client_id=${CLIENT_ID}`,
-      `redirect_uri=${encodeURIComponent('https://www.maev.me' + '/callback')}`,
+      `redirect_uri=${encodeURIComponent(CLIENT + '/callback')}`,
       'response_type=code',
       `scope=${scope}`,
     ].join('&')
@@ -25,10 +27,7 @@ const useDiscordAuth = (app: Express) => {
       const params = new URLSearchParams({
         client_id: CLIENT_ID as string,
         client_secret: CLIENT_SECRET as string,
-        redirect_uri:
-          process.env.ENV === 'production'
-            ? 'https://www.maev.me/callback'
-            : 'localhost:3000/callback',
+        redirect_uri: CLIENT + '/callback',
         code: code as string,
         grant_type: 'authorization_code',
         scope,

@@ -24,7 +24,7 @@ class Route {
     const { tokenType, accessToken } = req.session
 
     if (!tokenType || !accessToken) {
-      return res.send({ error: 'No tokens stored in session' })
+      return res.status(401).send({ error: 'No tokens stored in session' })
     }
 
     return next()
