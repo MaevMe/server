@@ -14,8 +14,8 @@ const createApp = () => {
     corsPackage({
       origin:
         process.env.ENV === 'production'
-          ? 'localhost:3000'
-          : ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me'],
+          ? ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me']
+          : 'localhost:3000',
       credentials: true,
     })
   )
