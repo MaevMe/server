@@ -25,7 +25,10 @@ const useDiscordAuth = (app: Express) => {
       const params = new URLSearchParams({
         client_id: CLIENT_ID as string,
         client_secret: CLIENT_SECRET as string,
-        redirect_uri: 'https://www.maev.me/callback',
+        redirect_uri:
+          process.env.ENV === 'production'
+            ? 'https://www.maev.me/callback'
+            : 'localhost:3000/callback',
         code: code as string,
         grant_type: 'authorization_code',
         scope,

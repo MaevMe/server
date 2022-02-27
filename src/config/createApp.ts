@@ -12,7 +12,10 @@ const createApp = () => {
 
   app.use(
     corsPackage({
-      origin: ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me'],
+      origin:
+        process.env.ENV === 'production'
+          ? 'localhost:3000'
+          : ['https://www.maev.me', /^.+maev\.me$/, 'https://maev.me'],
       credentials: true,
     })
   )
@@ -29,7 +32,7 @@ const createApp = () => {
       saveUninitialized: false,
       cookie: {
         secure: true,
-        sameSite: true,
+        sameSite: process.env.ENV === 'production' ? true : 'lax',
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 6.75,
       },
