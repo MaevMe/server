@@ -3,15 +3,14 @@ import type { APIChannel } from 'discord-api-types/v9'
 type Server = {
   id: string
   _id: string
-  name: string
   tempVoiceChannels: {
     active: boolean
-    createChannel: string
-    namingFormat: string
+    usingCreatedChannels: boolean
+    createChannelID: string
     categoryID: string
+    namingFormat: string
     userLimit: number
     includeTextChannel: boolean
-    usingCreatedChannels: boolean
   }
   categories: APIChannel[]
   voiceChannels: APIChannel[]

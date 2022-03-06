@@ -1,5 +1,5 @@
 import createApp from './config/createApp'
-import useDiscordAuth from './config/useDiscordAuth'
+import useDiscordAuth from './discord/hooks/useDiscordAuth'
 import connectMongo from './config/connectMongo'
 import createRoutes from './config/createRoutes'
 

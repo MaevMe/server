@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ESNext",
     "lib": ["es6"],
     "module": "commonjs",
     "rootDir": "src",
@@ -11,6 +11,6 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "typeRoots": ["src/types", "./node_modules/@types"]
+    "typeRoots": ["src/types*", "./node_modules/@types"]
   }
 }

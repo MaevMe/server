@@ -1,27 +1,13 @@
 import Route from '../structure/Route'
-import discord from '../utils/discord'
-
-import {
-  RESTGetAPICurrentUserResult,
-  RESTGetAPICurrentUserGuildsResult,
-  RESTAPIPartialCurrentUserGuild,
-} from 'discord-api-types/v9'
+import Discord from '../discord/Discord'
 
 export default new Route(
   async (req, res) => {
-    const headers = discord.getHeaders(req)
-
     try {
-      const user = (await discord.api.get('/users/@me', { headers }))
-        .data as RESTGetAPICurrentUserResult
-      const guilds = (await discord.api.get('/users/@me/guilds', { headers }))
-        .data as RESTGetAPICurrentUserGuildsResult
+      const discord = new Discord(req)
 
-      const guildsWithPermission = guilds.filter(
-        (guild: RESTAPIPartialCurrentUserGuild) => parseInt(guild.permissions) & 0x8
-      )
-
-      return res.status(200).send({ ...user, guilds: guildsWithPermission })
+      const user = await discord.getCurrentUser()
+      return res.status(200).send(user)
     } catch (err) {
       console.error('@me.post', err)
       return res.status(500).send({ err })

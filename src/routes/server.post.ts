@@ -1,15 +1,16 @@
 import Route from '../structure/Route'
 import Server from '../models/Server'
-import discord from '../utils/discord'
-import type ServerType from '../types/Server'
+import Discord from '../discord/Discord'
+
+import type ServerFromClient from '../types/client/Server'
 
 export default new Route(
   async (req, res) => {
     const { guildID } = req.params
     const newServer = req.body
-    const headers = discord.getHeaders(req)
+    const discord = new Discord(req)
 
-    const { _id, tempVoiceChannels: newSettings, id } = newServer as ServerType
+    const { _id, tempVoiceChannels: newSettings, id } = newServer as ServerFromClient
     const namingFormat = newSettings.namingFormat.replace(/[ ]*\|[ ]*/gm, '┃')
 
     const existingServer = await Server.findById(_id)
@@ -20,40 +21,29 @@ export default new Route(
 
     try {
       if (!oldSettings.usingCreatedChannels && newSettings.usingCreatedChannels) {
-        const createdCategory = (
-          await discord.api.post(
-            `guilds/${id}`,
-            { name: 'Temporary Voice Channels', type: 4 },
-            { headers }
-          )
-        ).data
+        const category = await discord.createChannel(id, 'Temporary VCs', 'GUILD_CATEGORY')
+        const channel = await discord.createChannel(
+          id,
+          'Join to create',
+          'GUILD_VOICE',
+          category.id
+        )
 
-        const createdChannel = (
-          await discord.api.post(
-            `guilds/${id}`,
-            { name: 'Join to Create a VC', type: 2, parent_id: createdCategory.id },
-            { headers }
-          )
-        ).data
-
-        existingServer.tempVoiceChannels.categoryID = createdCategory.id
-        existingServer.tempVoiceChannels.createChannel = createdChannel.id
-        existingServer.tempVoiceChannels.usingCreatedChannels = true
+        // update categoryID, createChannelID and usingCreatedChannels to true
       } else if (oldSettings.usingCreatedChannels && !newSettings.usingCreatedChannels) {
-        if (oldSettings.createChannel !== newSettings.createChannel) {
-          await discord.api.delete(`/channels/${oldSettings.createChannel}`, { headers })
+        if (oldSettings.createChannelID !== newSettings.createChannelID) {
+          // old settings create channel id
+          await discord.deleteChannel('odkeodi')
         }
 
         if (oldSettings.categoryID !== newSettings.categoryID) {
-          await discord.api.delete(`/channels/${oldSettings.categoryID}`, { headers })
+          // old settings category id
+          await discord.deleteChannel('dokedoedieo')
         }
 
-        existingServer.tempVoiceChannels.categoryID = newSettings.categoryID
-        existingServer.tempVoiceChannels.createChannel = newSettings.createChannel
-        existingServer.tempVoiceChannels.usingCreatedChannels = false
+        // update categoryID, createChannelID and usingCreatedChannels to false
       } else {
-        existingServer.tempVoiceChannels.categoryID = newSettings.categoryID
-        existingServer.tempVoiceChannels.createChannel = newSettings.createChannel
+        // update ids of category and create channel to new settings ids
       }
 
       const updatedServer = await existingServer.save()
