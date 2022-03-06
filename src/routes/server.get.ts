@@ -24,8 +24,7 @@ export default new Route(
       const voiceChannels = channels.filter(({ type }) => type === 2).map(map)
       const categories = channels.filter(({ type }) => type === 4).map(map)
 
-      // send ._doc, rather than entire document
-      return res.status(200).send({ ...server, categories, voiceChannels, guild })
+      return res.status(200).send({ ...server.toJSON(), categories, voiceChannels, guild })
     } catch (err) {
       console.error('@server.get', err)
       return res.status(500).send({ err })

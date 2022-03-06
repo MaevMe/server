@@ -31,24 +31,19 @@ class Discord {
   }
 
   async getCurrentUser() {
-    const user: RESTGetAPICurrentUserResult = (await this.#api.get('/users/@me', { headers: this.#getUserHeaders() }))
-      .data
+    const user: RESTGetAPICurrentUserResult = (await this.#api.get('/users/@me', { headers: this.#getUserHeaders() })).data
 
     const guilds: RESTGetAPICurrentUserGuildsResult = (
       await this.#api.get('/users/@me/guilds', { headers: this.#getUserHeaders() })
     ).data
 
-    const guildsWithPermission = guilds.filter(
-      (guild: RESTAPIPartialCurrentUserGuild) => parseInt(guild.permissions) & 0x8
-    )
+    const guildsWithPermission = guilds.filter((guild: RESTAPIPartialCurrentUserGuild) => parseInt(guild.permissions) & 0x8)
 
     return { ...user, guilds: guildsWithPermission }
   }
 
   async getGuild(guild_id: string, withChannels?: boolean) {
-    const guild: RESTGetAPIGuildResult = (
-      await this.#api.get(`/guilds/${guild_id}`, { headers: this.#getBotHeaders() })
-    ).data
+    const guild: RESTGetAPIGuildResult = (await this.#api.get(`/guilds/${guild_id}`, { headers: this.#getBotHeaders() })).data
 
     if (withChannels) {
       const channels: RESTGetAPIGuildChannelsResult = (
@@ -66,7 +61,7 @@ class Discord {
       await this.#api.post(
         `guilds/${guild_id}/channels`,
         { name, type: getChannelTypeNumber(type), parent_id },
-        { headers: this.#getUserHeaders() }
+        { headers: this.#getBotHeaders() }
       )
     ).data
 
@@ -74,9 +69,8 @@ class Discord {
   }
 
   async deleteChannel(id: string) {
-    const channel: RESTDeleteAPIChannelResult = (
-      await this.#api.delete(`/channels/${id}`, { headers: this.#getUserHeaders() })
-    ).data
+    const channel: RESTDeleteAPIChannelResult = (await this.#api.delete(`/channels/${id}`, { headers: this.#getBotHeaders() }))
+      .data
 
     return channel
   }

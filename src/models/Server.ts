@@ -2,10 +2,13 @@ import { Schema, model } from 'mongoose'
 import Server from '../types/models/Server'
 
 const serverSchema = new Schema<Server>({
-  id: String,
+  id: {
+    type: String,
+    unique: true,
+  },
   tempVoiceChannels: {
     active: Boolean,
-    createChannel: String,
+    createChannelID: String,
     namingFormat: String,
     categoryID: String,
     userLimit: Number,

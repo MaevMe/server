@@ -2,49 +2,45 @@ import Route from '../structure/Route'
 import Server from '../models/Server'
 import Discord from '../discord/Discord'
 
-import type ServerFromClient from '../types/client/Server'
+import type ClientServer from '../types/client/Server'
 
 export default new Route(
   async (req, res) => {
     const { guildID } = req.params
-    const newServer = req.body
+
+    const newServer = req.body as ClientServer
     const discord = new Discord(req)
 
-    const { _id, tempVoiceChannels: newSettings, id } = newServer as ServerFromClient
-    const namingFormat = newSettings.namingFormat.replace(/[ ]*\|[ ]*/gm, '┃')
-
-    const existingServer = await Server.findById(_id)
+    const existingServer = await Server.findOne({ id: guildID })
     if (!existingServer) return res.status(404).send({ err: 'No server in mongodb' })
 
-    existingServer.tempVoiceChannels.namingFormat = namingFormat
-    const { tempVoiceChannels: oldSettings } = existingServer
-
     try {
-      if (!oldSettings.usingCreatedChannels && newSettings.usingCreatedChannels) {
-        const category = await discord.createChannel(id, 'Temporary VCs', 'GUILD_CATEGORY')
-        const channel = await discord.createChannel(
-          id,
-          'Join to create',
-          'GUILD_VOICE',
-          category.id
-        )
+      if (!existingServer.tempVoiceChannels.usingCreatedChannels && newServer.tempVoiceChannels.usingCreatedChannels) {
+        const category = await discord.createChannel(newServer.id, 'Temporary VCs', 'GUILD_CATEGORY')
+        const channel = await discord.createChannel(newServer.id, 'Join to create!', 'GUILD_VOICE', category.id)
 
-        // update categoryID, createChannelID and usingCreatedChannels to true
-      } else if (oldSettings.usingCreatedChannels && !newSettings.usingCreatedChannels) {
-        if (oldSettings.createChannelID !== newSettings.createChannelID) {
-          // old settings create channel id
-          await discord.deleteChannel('odkeodi')
-        }
-
-        if (oldSettings.categoryID !== newSettings.categoryID) {
-          // old settings category id
-          await discord.deleteChannel('dokedoedieo')
-        }
-
-        // update categoryID, createChannelID and usingCreatedChannels to false
+        existingServer.tempVoiceChannels.categoryID = category.id
+        existingServer.tempVoiceChannels.createChannelID = channel.id
       } else {
-        // update ids of category and create channel to new settings ids
+        if (existingServer.tempVoiceChannels.usingCreatedChannels && !newServer.tempVoiceChannels.usingCreatedChannels) {
+          if (existingServer.tempVoiceChannels.createChannelID !== newServer.tempVoiceChannels.createChannelID) {
+            await discord.deleteChannel(existingServer.tempVoiceChannels.createChannelID)
+          }
+
+          if (existingServer.tempVoiceChannels.categoryID !== newServer.tempVoiceChannels.categoryID) {
+            await discord.deleteChannel(existingServer.tempVoiceChannels.categoryID)
+          }
+        }
+
+        existingServer.tempVoiceChannels.categoryID = newServer.tempVoiceChannels.categoryID
+        existingServer.tempVoiceChannels.createChannelID = newServer.tempVoiceChannels.createChannelID
       }
+
+      const namingFormat = newServer.tempVoiceChannels.namingFormat.replace(/[ ]*\|[ ]*/gm, '┃')
+
+      existingServer.tempVoiceChannels.namingFormat = namingFormat
+      existingServer.tempVoiceChannels.active = newServer.tempVoiceChannels.active
+      existingServer.tempVoiceChannels.usingCreatedChannels = newServer.tempVoiceChannels.usingCreatedChannels
 
       const updatedServer = await existingServer.save()
       return res.status(200).send(updatedServer)
