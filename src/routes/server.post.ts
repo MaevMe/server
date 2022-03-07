@@ -15,32 +15,63 @@ export default new Route(
     if (!existingServer) return res.status(404).send({ err: 'No server in mongodb' })
 
     try {
-      if (!existingServer.tempVoiceChannels.usingCreatedChannels && newServer.tempVoiceChannels.usingCreatedChannels) {
-        const category = await discord.createChannel(newServer.id, 'Temporary VCs', 'GUILD_CATEGORY')
-        const channel = await discord.createChannel(newServer.id, 'Join to create!', 'GUILD_VOICE', category.id)
+      if (
+        !existingServer.tempVoiceChannels.usingCreatedChannels &&
+        newServer.tempVoiceChannels.usingCreatedChannels
+      ) {
+        const category = await discord.createChannel(
+          newServer.id,
+          'Temporary VCs',
+          'GUILD_CATEGORY'
+        )
+        const channel = await discord.createChannel(
+          newServer.id,
+          'Join to create!',
+          'GUILD_VOICE',
+          category.id
+        )
 
         existingServer.tempVoiceChannels.categoryID = category.id
         existingServer.tempVoiceChannels.createChannelID = channel.id
       } else {
-        if (existingServer.tempVoiceChannels.usingCreatedChannels && !newServer.tempVoiceChannels.usingCreatedChannels) {
-          if (existingServer.tempVoiceChannels.createChannelID !== newServer.tempVoiceChannels.createChannelID) {
+        if (
+          existingServer.tempVoiceChannels.usingCreatedChannels &&
+          !newServer.tempVoiceChannels.usingCreatedChannels
+        ) {
+          if (
+            existingServer.tempVoiceChannels.createChannelID !==
+            newServer.tempVoiceChannels.createChannelID
+          ) {
             await discord.deleteChannel(existingServer.tempVoiceChannels.createChannelID)
           }
 
-          if (existingServer.tempVoiceChannels.categoryID !== newServer.tempVoiceChannels.categoryID) {
+          if (
+            existingServer.tempVoiceChannels.categoryID !== newServer.tempVoiceChannels.categoryID
+          ) {
             await discord.deleteChannel(existingServer.tempVoiceChannels.categoryID)
           }
         }
 
         existingServer.tempVoiceChannels.categoryID = newServer.tempVoiceChannels.categoryID
-        existingServer.tempVoiceChannels.createChannelID = newServer.tempVoiceChannels.createChannelID
+        existingServer.tempVoiceChannels.createChannelID =
+          newServer.tempVoiceChannels.createChannelID
       }
 
       const namingFormat = newServer.tempVoiceChannels.namingFormat.replace(/[ ]*\|[ ]*/gm, '┃')
 
+      if (!newServer.tempVoiceChannels.active) {
+        if (existingServer.tempVoiceChannels.usingCreatedChannels) {
+          await discord.deleteChannel(existingServer.tempVoiceChannels.createChannelID)
+          await discord.deleteChannel(existingServer.tempVoiceChannels.categoryID)
+        }
+        existingServer.tempVoiceChannels.createChannelID = ''
+        existingServer.tempVoiceChannels.categoryID = ''
+      }
+
       existingServer.tempVoiceChannels.namingFormat = namingFormat
       existingServer.tempVoiceChannels.active = newServer.tempVoiceChannels.active
-      existingServer.tempVoiceChannels.usingCreatedChannels = newServer.tempVoiceChannels.usingCreatedChannels
+      existingServer.tempVoiceChannels.usingCreatedChannels =
+        newServer.tempVoiceChannels.usingCreatedChannels
 
       const updatedServer = await existingServer.save()
       return res.status(200).send(updatedServer)
